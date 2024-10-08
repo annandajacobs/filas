@@ -1,57 +1,67 @@
 '''
 7. Modifique a implementação FilaArray para que a capacidade da fila seja limitada a um parâmetro informado no construtor. Se enqueue for chamado quando a fila estiver cheia, lance a exceção FilaCheia.
 '''
-from node import Node
+class FilaArray:
+  
+  CAPACIDADE_PADRAO = 5 
 
-class Fila:
-    def __init__(self, capacidade):
-        """Inicializa uma fila vazia com uma capacidade limitada."""
-        self.first = None  # Aponta para o primeiro nó (cabeça)
-        self.last = None   # Aponta para o último nó (cauda)
-        self._size = 0     # Contador para o número de elementos na fila
-        self._capacidade = capacidade  # Capacidade máxima da fila
+  def __init__(self):
+    self._dados = [None] * FilaArray.CAPACIDADE_PADRAO
+    self._tamanho = 0
+    self._inicio = 0
 
-    def enqueue(self, item):
-        """Insere um item no final da fila."""
-        if self._size >= self._capacidade:
-            raise Exception("A fila está cheia.")
-        
-        new_node = Node(item)  # Cria um novo nó com o valor fornecido
+  def __len__(self):
+    return self._tamanho #O(1)
 
-        if self.is_empty():
-            self.first = new_node  # Se a fila estiver vazia, o novo nó é o primeiro
-        else:
-            self.last.next = new_node  # Conecta o último nó ao novo nó
+  def is_empty(self):
+    return self._tamanho == 0
+  
+  def is_full(self):
+    return self._tamanho == FilaArray.CAPACIDADE_PADRAO
 
-        self.last = new_node  # Atualiza o ponteiro 'last' para o novo nó
-        self._size += 1
+  def first(self):
+    if self.is_empty():
+      raise Exception('A Fila está vazia')
+    return self._dados[self._inicio]
 
-    def dequeue(self):
-        """Remove e retorna o primeiro item da fila."""
-        if self.is_empty():
-            raise Exception("A fila está vazia.")
-        
-        item = self.first.data  # Pega o dado do primeiro nó
-        self.first = self.first.next  # Move o ponteiro para o próximo nó
+  def dequeue(self):
+    if self.is_empty():
+      raise Exception('A Fila está vazia')
+    result = self._dados[self._inicio]
+    self._dados[self._inicio] = None
+    self._inicio = (self._inicio + 1) % len(self._dados)
+    self._tamanho -= 1
+    return result
 
-        if self.first is None:
-            self.last = None  # Se a fila ficou vazia, last também se torna None
-        
-        self._size -= 1
-        return item
+  def enqueue(self, eLemento): # - - x x x - 
+    if self.is_full():
+      raise Exception("A fila está cheia.")
+    
+    disponivel = (self._inicio + self._tamanho) % len(self._dados)
+    self._dados[disponivel] = eLemento
+    self._tamanho += 1
 
-    def first_element(self):
-        """Retorna o primeiro item da fila sem removê-lo."""
-        if self.is_empty():
-            raise Exception("A fila está vazia.")
-        return self.first.data
+  def _altera_tamanho(self, novo_tamanho):   # novo_tamanho precisar ser >= len(self)
+    dados_antigos = self._dados               # keep track of existing list
+    self._dados = [None] * novo_tamanho       # allocate list with new capacity
+    posicao = self._inicio
+    for k in range(self._tamanho):            # only consider existing elements
+      self._dados[k] = dados_antigos[posicao] # intentionally shift indices
+      posicao = (1 + posicao) % len(dados_antigos) # use dados_antigos size as modulus
+    self._inicio = 0                          # front has been realigned
 
-    def is_empty(self):
-        """Verifica se a fila está vazia."""
-        return self.first is None
+  def show(self):
+    print(self)
 
-    def __len__(self):
-        """Retorna o número de elementos na fila."""
-        return self._size
+  def __str__(self):
+    posicao = self._inicio
+    result = "["
+    
+    for k in range(self._tamanho):
+      result += str(self._dados[posicao]) + ", "
+      posicao = (1 + posicao) % len(self._dados)
+    result += f'] tamanho: {len(self)} capacidade {len(self._dados)}\n'
+    return result
+
 
     

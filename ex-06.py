@@ -3,7 +3,6 @@
 executadas em O(1).
 '''
 
-from collections import deque
 
 class FilaComDuasPilhas:
     def __init__(self):
