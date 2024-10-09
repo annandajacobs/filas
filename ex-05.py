@@ -3,30 +3,58 @@
 métodos. Qual a avaliação do desempenho (utilizando a notação Big O) dos métodos push(), pop() e top()?
 '''
 
-class PilhacomFila:
+class Fila:
     def __init__(self):
-        self.pilha = []
+        """Inicializa uma fila vazia."""
+        self._dados = []  # Usamos uma lista para armazenar os elementos da fila
+
+    def enqueue(self, item):
+        """Insere um item no final da fila."""
+        self._dados.append(item)
+
+    def dequeue(self):
+        """Remove e retorna o primeiro item da fila."""
+        if self.is_empty():
+            raise Exception("A fila está vazia.")
+        return self._dados.pop(0)  # Remove o primeiro item
 
     def is_empty(self):
-        return len(self.fila) == 0
+        """Verifica se a fila está vazia."""
+        return len(self._dados) == 0
 
-    def top(self):
-        if self.is_empty():
-            raise Exception("A pilha está vazia.")
-        return self.pilha[0]
-        
-    def push(self, elemento):
-        tamanho_original = len(self.pilha)
-        self.pilha.append(elemento)
+    def size(self):
+        """Retorna o número de elementos na fila."""
+        return len(self._dados)
 
-        for i in range(tamanho_original):
-            self.pilha.append(self.pilha.pop(0)) #move do inicio para o final
+
+class Pilha:
+    def __init__(self):
+        """Inicializa uma pilha usando uma única fila."""
+        self.fila = Fila()  # Cria uma instância de Fila
+
+    def push(self, item):
+        """Adiciona um item na pilha."""
+        self.fila.enqueue(item)  # Insere o item na fila
+        # Move todos os elementos da fila para o final
+        for _ in range(self.fila.size() - 1):
+            self.fila.enqueue(self.fila.dequeue())
 
     def pop(self):
+        """Remove e retorna o item do topo da pilha."""
         if self.is_empty():
             raise Exception("A pilha está vazia.")
-        return self.pilha.pop(0)
-    
+        return self.fila.dequeue()  # Remove o primeiro item, que é o topo da pilha
 
+    def top(self):
+        """Retorna o item do topo da pilha sem removê-lo."""
+        if self.is_empty():
+            raise Exception("A pilha está vazia.")
+        return self.fila._dados[0]  # Retorna o primeiro item da fila
 
+    def is_empty(self):
+        """Verifica se a pilha está vazia."""
+        return self.fila.is_empty()
 
+    def size(self):
+        """Retorna o número de elementos na pilha."""
+        return self.fila.size()
