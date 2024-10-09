@@ -50,7 +50,7 @@ class FilaArray:
     posicao = self._inicio
     for k in range(self._tamanho):            # only consider existing elements
       self._dados[k] = dados_antigos[posicao] # intentionally shift indices
-      posicao = (1 + posicao) % len(dados_antigos) # use dados_antigos size as modulus
+      posicao = (posicao + 1) % len(dados_antigos) # use dados_antigos size as modulus
     self._inicio = 0                          # front has been realigned
 
   def show(self):
@@ -67,3 +67,8 @@ class FilaArray:
     return result
 
 
+f = FilaArray()
+f._altera_tamanho(7)
+for i in range(7):
+  f.enqueue(i)
+f.show()

@@ -2,11 +2,10 @@
 7. Modifique a implementação FilaArray para que a capacidade da fila seja limitada a um parâmetro informado no construtor. Se enqueue for chamado quando a fila estiver cheia, lance a exceção FilaCheia.
 '''
 class FilaArray:
-  
-  CAPACIDADE_PADRAO = 5 
 
   def __init__(self):
-    self._dados = [None] * FilaArray.CAPACIDADE_PADRAO
+    self._capacidade = 5
+    self._dados = [None] * self._capacidade
     self._tamanho = 0
     self._inicio = 0
 
@@ -17,7 +16,7 @@ class FilaArray:
     return self._tamanho == 0
   
   def is_full(self):
-    return self._tamanho == FilaArray.CAPACIDADE_PADRAO
+    return self._tamanho == self._capacidade
 
   def first(self):
     if self.is_empty():
@@ -33,7 +32,7 @@ class FilaArray:
     self._tamanho -= 1
     return result
 
-  def enqueue(self, eLemento): # - - x x x - 
+  def enqueue(self, eLemento): 
     if self.is_full():
       raise Exception("A fila está cheia.")
     
@@ -47,7 +46,7 @@ class FilaArray:
     posicao = self._inicio
     for k in range(self._tamanho):            # only consider existing elements
       self._dados[k] = dados_antigos[posicao] # intentionally shift indices
-      posicao = (1 + posicao) % len(dados_antigos) # use dados_antigos size as modulus
+      posicao = (posicao + 1) % len(dados_antigos) # use dados_antigos size as modulus
     self._inicio = 0                          # front has been realigned
 
   def show(self):
@@ -58,10 +57,16 @@ class FilaArray:
     result = "["
     
     for k in range(self._tamanho):
-      result += str(self._dados[posicao]) + ", "
+      result += str(self._dados[posicao]) + "\n"
       posicao = (1 + posicao) % len(self._dados)
     result += f'] tamanho: {len(self)} capacidade {len(self._dados)}\n'
     return result
 
 
-    
+if __name__ == '__main__':
+  f = FilaArray()
+  f._altera_tamanho(7)
+
+  for i in range(7):
+    f.enqueue(i)
+  f.show()
